@@ -1,54 +1,48 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from '../../../node_modules/rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { StateService } from '../state/state.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
 
-  // currentLocation = new BehaviorSubject<object> = {lat: null, lng: null}
 
-  constructor() { }
+  constructor(
+    private STATE: StateService
+  ) { }
 
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log("GETTING POSITION")
-        console.log({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          altitude: position.coords.altitude
-        });
-      });
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
+  // Gets LAT/LNG then updates state or throws error
+  getLocation(){
+    this.STATE.toggleLocationLoading(true);
+    return this.getLocationPromise()
+    .then((pos: any) => {
+      this.STATE.toggleLocationLoading(false);
+      return this.STATE.setLatLng(pos.latitude, pos.longitude);
+    }).catch((err: any) => {
+      this.STATE.toggleLocationLoading(false);
+      return console.error(err)
+    })
   }
 
-  // Enabled ONLY if user approves auto-updating location
-  trackLocation(){
+  private getLocationPromise() {
+    return new Promise((resolve, reject) => {
+      console.log('In the promise')
       if (navigator.geolocation) {
-      //if (navigator.geolocation && settings.trackingApproved) 
-        navigator.geolocation.watchPosition((position) => {
-          console.log("Tracking position")
-          console.log({
+        console.log('We have geolocation')
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log("GETTING POSITION")
+          let positionInfo = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             altitude: position.coords.altitude
-          });
+          };
+          resolve(positionInfo)
         });
       } else {
-        let error = [];
-        if (!navigator.geolocation){
-          error.push('Geolocation is not supported by this browser');
-        }
-        // if (!settings.trackingApproved){
-        //   error.push('Auto-detecting location is turned off.')
-        // }
-        console.error(error.forEach(err => {
-          return err;
-        }));
+        reject("Geolocation is not supported by this browser.");
       }
-    }
+    })
+  }
   
 }

@@ -1,0 +1,10 @@
+<div class="location-container">
+  <h2>Location:</h2>
+  <div *ngIf="locationLoading; else locationDisplay" class="location-loading">
+    <p>LOADING...</p>
+  </div>
+  <ng-template #locationDisplay>
+    <p class="lat">Lat: {{latitude}}</p>
+    <p class="lng">Lng: {{longitude}}</p>
+  </ng-template>
+</div>  

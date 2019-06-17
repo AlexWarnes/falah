@@ -1,39 +1,65 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { StateService } from '../state/state.service';
+import mockData from '../state/mockTimes.json';
+import { Observable } from '../../../node_modules/rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrayerTimesApiService {
 
-  apiBaseURL: string = 'https://api.aladhan.com/v1'
+  isDevMode = isDevMode();
+  apiBaseURL: string = this.isDevMode ? '../state/mockTimes.json' : 'https://api.aladhan.com/v1'
+
+  // isDevMode = false;
+  // apiBaseURL: string = 'https://api.aladhan.com/v1'
 
   constructor(
     private http: HttpClient,
-    private params: HttpParams
+    private STATE: StateService
   ) { }
 
-  /**
-   * 
-   * @param date unix: number or DD/MM/YYY: string; API defaults to current day
-   * @param argsObj object with optional keys: 
-      latitude" (decimal) -
-      longitude" (decimal) -
-      method" (number) -
-      tune" (string) -
-      school" (number) -
-      midnightMode" (number) -
-      timezonestring" (string) -
-      latitudeAdjustmentMethod" (number) -
-      adjustment" (number) -
-   */
-  getPrayerTimesByDate(date: any, argsObj: object){
-    let params = this.params;
-    Object.keys(argsObj).forEach(arg => {
-      params.append(arg, argsObj[arg])
-    })
-    return this.http.get(`${this.apiBaseURL}/timings/${date}`)
+  getPrayerTimes(date: any, argsObj: object){
+    this.STATE.toggleTimesLoading(true);
+    // Uses mock data if local
+    if(this.isDevMode){
+      console.log("Using Mock Data");
+      console.log('Date arg is: ' + date)
+      this.STATE.setPrayerTimes(mockData.data.timings);
+      this.STATE.toggleTimesLoading(false);
+    } else {
+      this.getPrayerTimesByDate(date, argsObj).subscribe(
+        (res) => {
+          console.log(res);
+          this.STATE.setPrayerTimes(res.data.timings);
+          this.STATE.toggleTimesLoading(false);
+        },
+        (err) => {
+          console.error(err)
+          this.STATE.toggleTimesLoading(false);
+          // TODO: add error handling
+        }
+      )
+    }
   }
+
+  /**
+   * @param date unix: number or DD/MM/YYY: string; API defaults to current day
+   * @param argsObj populates query params
+   */
+  private getPrayerTimesByDate(date: any, argsObj: object): Observable<any>{
+    let params = new HttpParams();
+    
+    // Add all options as params
+    Object.keys(argsObj).forEach(arg => {
+      params = params.set(arg, argsObj[arg])
+    });
+
+    return this.http.get(`${this.apiBaseURL}/timings`, {params});
+    // return this.http.get(`${this.apiBaseURL}/timings/${date}`, {params});
+  }
+
 }
 
 // "method" (number) -
