@@ -25,6 +25,7 @@ export interface preferences {
   autoDetectLocation: boolean;
   calcMethod: number;
   school: number;
+  midnightMode: number;
   notifications: boolean;
 }
 
@@ -62,10 +63,11 @@ export class StateService {
   })
 
   preferences$ = new BehaviorSubject<preferences>({
-    autoDetectLocation: undefined,
-    calcMethod: undefined,
+    autoDetectLocation: false,
+    calcMethod: 2,
     school: 0,
-    notifications: undefined
+    midnightMode: 0,
+    notifications: false
   })
 
   ui$ = new BehaviorSubject<ui>({

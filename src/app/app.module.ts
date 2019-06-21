@@ -8,6 +8,7 @@ import { TimesTableDayComponent } from './components/times-table-day/times-table
 import { PrayerTimesViewComponent } from './components/prayer-times-view/prayer-times-view.component';
 import { SettingsViewComponent } from './components/settings-view/settings-view.component';
 import { LocationComponent } from './components/location/location.component';
+import { SettingsMenuComponent } from './components/settings-menu/settings-menu.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { LocationComponent } from './components/location/location.component';
     TimesTableDayComponent,
     PrayerTimesViewComponent,
     SettingsViewComponent,
-    LocationComponent
+    LocationComponent,
+    SettingsMenuComponent
   ],
   imports: [
     BrowserModule,
