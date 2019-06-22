@@ -15,7 +15,6 @@ export class AppComponent implements OnInit {
     private prayerTimesSvc: PrayerTimesApiService
   ){}
 
-  title = 'falah';
   latitude: number;
   longitude: number;
   calcMethod: number;

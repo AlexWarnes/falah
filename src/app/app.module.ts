@@ -1,7 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule }    from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+// MATERIAL MODULES
+import {MatButtonModule, MatSlideToggleModule} from '@angular/material';
+
+// COMPONENTS
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TimesTableDayComponent } from './components/times-table-day/times-table-day.component';
@@ -17,12 +22,15 @@ import { SettingsMenuComponent } from './components/settings-menu/settings-menu.
     PrayerTimesViewComponent,
     SettingsViewComponent,
     LocationComponent,
-    SettingsMenuComponent
+    SettingsMenuComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatButtonModule, 
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
