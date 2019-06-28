@@ -1,4 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
 body * {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #ffffff;
+  background-color: #1b1b1b;
+  background: #1b1b1b;  
+}
+
+.view-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.window-box {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  max-height: 500px;
+}
+
+.mat-slide-toggle-label {
+  justify-content: space-between !important;
 }

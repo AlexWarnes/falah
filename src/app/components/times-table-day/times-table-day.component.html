@@ -1,9 +1,8 @@
 <div class="times-container">
-  <h2>Prayer Times:</h2>
   <div *ngIf="timesLoading; else timesTable" class="times-loading">
-    <p>LOADING...</p>
+      <mat-spinner color="accent" strokeWidth="2" diameter="45"></mat-spinner>
   </div>
-  <ng-template #timesTable>
+  <ng-template #timesTable class="times-table">
     <ul class="times-table">
       <li class="time-box">
         <p class="event-name">Fajr</p>

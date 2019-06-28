@@ -18,7 +18,6 @@ export interface location {
   longitude: number;
   altitude: number;
   cityState: string;
-  savedLocations: Array<string>;
 }
 
 export interface preferences {
@@ -27,6 +26,8 @@ export interface preferences {
   school: number;
   midnightMode: number;
   notifications: boolean;
+  savedLocations: Array<string>;
+  // TODO: Default location?
 }
 
 export interface ui {
@@ -59,15 +60,15 @@ export class StateService {
     longitude: undefined,
     altitude: undefined,
     cityState: undefined,
-    savedLocations: []
   })
 
   preferences$ = new BehaviorSubject<preferences>({
-    autoDetectLocation: false,
+    autoDetectLocation: true,
     calcMethod: 2,
     school: 0,
     midnightMode: 0,
-    notifications: false
+    notifications: false,
+    savedLocations: ['Alexandria, VA','Madison, WI','Grand Rapids, MI']
   })
 
   ui$ = new BehaviorSubject<ui>({
@@ -116,7 +117,7 @@ export class StateService {
     return this.ui$.next(nextState);
   }
 
-  setPrayerTimes(prayerTimes: any){
+  setPrayerTimes(prayerTimes: prayerTimes){
     let previousState = this.prayerTimes$.value;
     let nextState = Object.assign({}, previousState, {
       ...prayerTimes
@@ -124,11 +125,20 @@ export class StateService {
     return this.prayerTimes$.next(nextState);
   }
 
-  changeSkool(): void {
+  setUserPrefs(prefs: preferences){
     let previousState = this.preferences$.value;
     let nextState = Object.assign({}, previousState, {
-      ...previousState,
-      school: previousState.school + 1
+      ...prefs
+    });
+    console.log("prefs: ", prefs);
+    console.log("next: ", nextState)
+    return this.preferences$.next(nextState);
+  }
+
+  useDefaultPrefs(){
+    let previousState = this.preferences$.value;
+    let nextState = Object.assign({}, previousState, {
+      ...previousState
     });
     return this.preferences$.next(nextState);
   }

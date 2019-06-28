@@ -10,6 +10,7 @@ export class PrayerTimesViewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

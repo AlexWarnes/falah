@@ -1,12 +1,50 @@
 <div class="settings-menu-container">
-  <p>{{preferences.autoDetectLocation}}</p>
+
   <mat-slide-toggle
-          class="example-margin"
-          color="accent">
-        Use Current Location
-      </mat-slide-toggle>
-  <p>{{preferences.calcMethod}}</p>
-  <p>{{preferences.school}}</p>
-  <p>{{preferences.midnightMode}}</p>
-  <p>{{preferences.notifications}}</p>
+    color="accent"
+    id="autoDetectLocation"
+    labelPosition="before"
+    [checked]="dynamicSettings.autoDetectLocation"
+    (change)="updateToggled($event)">
+    Automatically Detect Location
+  </mat-slide-toggle>
+  
+  <mat-form-field color="accent">
+    <mat-label>Calculation Method</mat-label>
+    <mat-select 
+    [value]="dynamicSettings.calcMethod"
+    (selectionChange)="updateSelected($event)"
+    id="calcMethod">
+      <mat-option *ngFor="let method of calcMethods" [value]="method.value">
+        {{method.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field color="accent">
+    <mat-label>School</mat-label>
+    <mat-select 
+    [value]="dynamicSettings.school"
+    (selectionChange)="updateSelected($event)"
+    id="school">
+      <mat-option *ngFor="let school of schools" [value]="school.value">
+        {{school.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field color="accent">
+    <mat-label>Midnight Mode</mat-label>
+    <mat-select 
+    [value]="dynamicSettings.midnightMode"
+    (selectionChange)="updateSelected($event)"
+    id="midnightMode">
+      <mat-option *ngFor="let mode of midnightModes" [value]="mode.value">
+        {{mode.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- TODO: Add notifications toggle -->
+
 </div>

@@ -1,0 +1,7 @@
+.settings-menu-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 30px 25px;
+}

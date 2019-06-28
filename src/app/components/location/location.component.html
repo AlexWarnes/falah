@@ -1,10 +1,15 @@
 <div class="location-container">
-  <h2>Location:</h2>
-  <div *ngIf="locationLoading; else locationDisplay" class="location-loading">
-    <p>LOADING...</p>
+  <div class="location-box">
+    <div class="loc-icon-box">
+      <i *ngIf="currentLocationNotSaved" class="material-icons loc-icon add-loc-icon">add</i>
+    </div>
+    <p *ngIf="locationLoading" class="location-text">loading...</p>
+    <p *ngIf="!locationLoading" class="location-text">{{latitude | number}},{{longitude | number}}</p>
+    <div class="loc-icon-box" [matMenuTriggerFor]="menu">
+      <i class="material-icons loc-icon">keyboard_arrow_down</i>
+      <mat-menu #menu="matMenu" color="accent">
+        <button *ngFor="let loc of savedLocations" mat-menu-item (click)="log($event, loc)">{{loc}}</button>
+      </mat-menu>
+    </div>
   </div>
-  <ng-template #locationDisplay>
-    <p class="lat">Lat: {{latitude}}</p>
-    <p class="lng">Lng: {{longitude}}</p>
-  </ng-template>
 </div>  

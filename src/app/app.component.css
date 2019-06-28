@@ -2,8 +2,12 @@ nav {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  background-color: #272727;
+  /* background-color: #1b1b1b; */
+  background: transparent;
   padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 nav a {
