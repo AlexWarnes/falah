@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { StateService } from '../state/state.service';
+import { StateService, preferences, location } from '../state/state.service';
 import mockData from '../state/mockTimes.json';
 import { Observable } from '../../../node_modules/rxjs';
 
@@ -20,7 +20,7 @@ export class PrayerTimesApiService {
     private STATE: StateService
   ) { }
 
-  getPrayerTimes(date: any, argsObj: object){
+  getPrayerTimes(date: any, locationObj: location, prefsObj: preferences){
     this.STATE.toggleTimesLoading(true);
     // Uses mock data if local
     if(this.isDevMode){
@@ -28,19 +28,38 @@ export class PrayerTimesApiService {
       console.log('Date arg is: ' + date)
       this.STATE.setPrayerTimes(mockData.data.timings);
       this.STATE.toggleTimesLoading(false);
+      return;
     } else {
-      this.getPrayerTimesByDate(date, argsObj).subscribe(
-        (res) => {
-          console.log(res);
-          this.STATE.setPrayerTimes(res.data.timings);
-          this.STATE.toggleTimesLoading(false);
-        },
-        (err) => {
-          console.error(err)
-          this.STATE.toggleTimesLoading(false);
-          // TODO: add error handling
+      switch(locationObj.type){
+        case('LAT_LNG'):
+        console.log("Gettings Prayer Times by Lat Lng...")
+        let options = {
+          latitude: locationObj.latitude,
+          longitude: locationObj.longitude,
+          method: prefsObj.calcMethod,
+          school: prefsObj.school,
+          midnightMode: prefsObj.midnightMode
         }
-      )
+        this.getPrayerTimesByLatLng(date, options).subscribe(
+          (res) => {
+            console.log(res);
+            this.STATE.setPrayerTimes(res.data.timings);
+            this.STATE.toggleTimesLoading(false);
+          },
+          (err) => {
+            console.error(err)
+            this.STATE.toggleTimesLoading(false);
+            // TODO: add error handling
+          }
+        )
+        case('CITY_STATE_COUNTRY'):
+        return console.log("Gettings Prayer Times by City, State, Country")
+
+        default:
+          // TODO: handle error
+          console.error('Error with getting prayer times.')
+      }
+      
     }
   }
 
@@ -48,7 +67,7 @@ export class PrayerTimesApiService {
    * @param date unix: number or DD/MM/YYY: string; API defaults to current day
    * @param argsObj populates query params
    */
-  private getPrayerTimesByDate(date: any, argsObj: object): Observable<any>{
+  private getPrayerTimesByLatLng(date: any, argsObj: object): Observable<any>{
     let params = new HttpParams();
     
     // Add all options as params

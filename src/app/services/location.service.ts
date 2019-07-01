@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { StateService } from '../state/state.service';
+import { StateService, location } from '../state/state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,20 @@ export class LocationService {
     })
   }
 
+  getLatLng(){
+    this.STATE.toggleLocationLoading(true);
+    return this.getLocationPromise()
+    .then((pos: any) => {
+      // return this.STATE.setLatLng(pos.latitude, pos.longitude);
+      this.STATE.toggleLocationLoading(false);
+      return {lat: pos.latitude, lng: pos.longitude}
+    }).catch((err: any) => {
+      // TODO: Handle error
+      this.STATE.toggleLocationLoading(false);
+      return console.error(err)
+    })
+  }
+
   private getLocationPromise() {
     return new Promise((resolve, reject) => {
       console.log('In the promise')
@@ -44,5 +58,82 @@ export class LocationService {
       }
     })
   }
-  
+
+  addToSavedLocations(){
+
+  }
+
+  // decipherLocationFromInput(locationInput: string){
+  //   if(isDevMode()){
+  //     console.log("Skipping geolocation in dev mode")
+  //     let locationDetails: location = {
+  //       type: 'LAT_LNG',
+  //       displayName: 'Current Location',
+  //       latitude: undefined,
+  //       longitude: undefined,
+  //       city: 'DevMode',
+  //       state: 'DevMode',
+  //       country: 'DevMode'
+  //     }
+  //     this.STATE.toggleLocationLoading(false);
+  //     return this.STATE.setLocation(locationDetails);
+  //   } else if (locationInput.trim().toLowerCase().includes("current location")){
+  //     console.log("Input is 'Current Location'")
+  //     return this.getLatLng()
+  //     .then((coords: any) => {
+  //       let locationDetails: location = {
+  //         type: 'LAT_LNG',
+  //         displayName: 'Current Location',
+  //         latitude: coords.lat,
+  //         longitude: coords.lng,
+  //         city: undefined,
+  //         state: undefined,
+  //         country: undefined
+  //       }
+  //       return this.STATE.setLocation(locationDetails);
+  //     }).catch(err => {
+  //       // TODO: handle error
+  //       console.error(err)
+  //     })
+  //   } else {
+  //     return console.log("Input is a 'City, State, Country'")
+  //   }
+  // }
+  decipherLocationFromInput(locationInput: string): Promise<location> {
+    return new Promise((resolve, reject)=>{
+      if (locationInput.trim().toLowerCase().includes("current location")){
+        console.log("Input is 'Current Location'")
+        this.getLatLng()
+        .then((coords: any) => {
+          let locationDetails: location = {
+            type: 'LAT_LNG',
+            displayName: 'Current Location',
+            latitude: coords.lat,
+            longitude: coords.lng,
+            city: undefined,
+            state: undefined,
+            country: undefined
+          }
+          resolve(locationDetails);
+        }).catch(err => {
+          console.error(err);
+          reject(err);
+        })
+      } else {
+        console.log("Input is a 'City, State, Country'");
+        let locationDetails: location = {
+          type: 'LAT_LNG',
+          displayName: 'Current Location',
+          latitude: undefined,
+          longitude: undefined,
+          city: undefined,
+          state: undefined,
+          country: undefined
+        }
+        // TODO: handle error
+        resolve(locationDetails)
+      }
+    })
+  }
+
 }

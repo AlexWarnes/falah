@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // MATERIAL MODULES
-import {MatButtonModule, MatSlideToggleModule, MatSelectModule, MatProgressSpinnerModule, MatMenuModule} from '@angular/material';
+import {MatButtonModule, MatSlideToggleModule, MatSelectModule, MatProgressSpinnerModule, MatMenuModule, MatFormFieldModule, MatInputModule} from '@angular/material';
 
 // COMPONENTS
 import { AppRoutingModule } from './app-routing.module';
@@ -35,7 +35,8 @@ import { SettingsMenuComponent } from './components/settings-menu/settings-menu.
     MatSlideToggleModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
+    MatFormFieldModule, MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

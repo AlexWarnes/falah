@@ -16,41 +16,51 @@ export class LocationComponent implements OnInit {
     private STATE: StateService,
   ) { }
 
-  currentLocationNotSaved: boolean = false;
-
+  currentLocationSaved: boolean = false;
+  locationInput: string;
   locationLoading: boolean;
-  ui = this.STATE.ui$.subscribe(
-    ui => {
-      this.locationLoading = ui.locationLoading;
-    }
-  )
-
   savedLocations: string[];
-  latitude: number;
-  longitude: number;
-  location = this.STATE.location$.subscribe(
-    location => {
-      this.latitude = location.latitude;
-      this.longitude = location.longitude;
+  displayName: string;
+
+  isLocationSaved(name: string): boolean {
+    if(this.savedLocations.filter(loc => loc === name || name === "Current Location").length > 0){
+      return true;
     }
-  )
+    return false;
+  }
 
   locationData$ = combineLatest(
-    // this.STATE.preferences$.pipe(skip(1))
-    this.STATE.preferences$
+    this.STATE.location$.pipe(skip(1)),
+    this.STATE.userSettings$    
   )
 
-  log(e, t){
-    console.log(e, t)
+  cityClick(e, t){
+    console.log("CITY CLICK!", e, t);
+    event.stopPropagation();
+  }
+  deleteClick(e, t){
+    console.log("DELETE CLICK!", e, t);
+    event.stopPropagation();
+  }
+
+  handleLocationInput(){
+    console.log(this.displayName);
   }
 
   ngOnInit() {
-    // need to know savedLocations, fill the menu
-    // need to know if autoDetectLocation t/f
-    // // if true, need to display "current location"
-    this.locationData$.subscribe(([data]) => {
-      this.savedLocations = data.savedLocations
+    this.locationData$.subscribe(([loc, settings]) => {
+      this.savedLocations = settings.savedLocations;
+      this.displayName = loc.displayName
+      this.currentLocationSaved = this.isLocationSaved(this.displayName);
+      console.log("savedLocations: ", this.savedLocations)
+      console.log("Display name is: ", this.displayName)
     })
+
+    this.STATE.ui$.subscribe(
+      ui => {
+        this.locationLoading = ui.locationLoading;
+      }
+    )
 
   }
 

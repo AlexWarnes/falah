@@ -23,13 +23,29 @@
 
 }
 
+.location-loading-box {
+  margin: 0;
+  font-weight: 200;
+  flex-grow: 1;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .location-text {
   margin: 0;
   font-weight: 200;
   flex-grow: 1;
   height: 100%;
-  padding: 10px 5px;
+  /* padding: 10px 5px; */
   /* border: 1px solid red; */
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 0;
+  font-size: .8em;
 }
 
 .loc-icon-box {
@@ -43,4 +59,37 @@
 
 .loc-icon {
   font-size: 18px;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-btn-box {
+  height: 100%;
+  width: 36px;
+  padding-left: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-location-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+}
+
+.delete-location-icon {
+  font-size: 12px;
+  /* padding-right: 1px; */
 }

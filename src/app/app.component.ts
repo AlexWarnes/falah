@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationService } from './services/location.service';
-import { StateService } from './state/state.service';
+import { StateService, location } from './state/state.service';
 import { PrayerTimesApiService } from './services/prayer-times-api.service';
 import { SettingsService } from './services/settings.service';
 import { combineLatest } from 'rxjs';
@@ -19,63 +19,48 @@ export class AppComponent implements OnInit {
     private prayerTimesSvc: PrayerTimesApiService
   ){}
 
-  // latitude: number;
-  // longitude: number;
-  // calcMethod: number;
-  // school: number;
-  appLoading: boolean = true;
-  // today: number = Math.floor(Date.now() / 1000);
-
-  appUI = this.STATE.ui$.subscribe(
-    ui => {
-      this.appLoading = ui.appLoading
-    }
-  )
-
-  // location = this.STATE.location$.subscribe(
-  //   location => {
-  //     this.latitude = location.latitude;
-  //     this.longitude = location.longitude;
-  //   }
-  // )
-
-  // userPreferences = this.STATE.preferences$.subscribe(
-  //   prefs => {
-  //     this.calcMethod = prefs.calcMethod;
-  //     this.school = prefs.school;
-  //   }
-  // )
-
   prayerTimesPayload$ = combineLatest(
-    this.STATE.location$,
-    this.STATE.preferences$
-  ).pipe(skip(1));
+    this.STATE.location$.pipe(skip(1)),
+    this.STATE.preferences$.pipe(skip(1))
+  );
+
+  initialSettings$ = combineLatest(
+    this.STATE.userSettings$.pipe(skip(1))
+  );
 
   ngOnInit(){
-    this.locationSvc.getLocation();
-    this.settingsSvc.getUserPrefs();
 
+    // Get user settings for default location
+    this.initialSettings$.subscribe(([settings]) => {
+      console.log("Got the initial settings: ", settings)
+      // Then use default location to update location$ state
+      this.locationSvc.decipherLocationFromInput(settings.defaultLocation)
+      .then(locationData => {
+        this.STATE.setLocation(locationData);
+      }).catch(err => {
+        console.error(err);
+      })
+      // TODO: Need to stop subscription after the initial settings load 
+      // otherwise any change to default location will recalc prayer times
+      // Consider just calling getUserSettings from cache, and always setting location 
+      // with the response. Then no need to do any of this logic in app onInit
+    })
+
+    // Update the displayed Prayer Times whenever location$ or preferences$ change
     this.prayerTimesPayload$.subscribe({
       next: ([loc, prefs]) => {
         console.log("Sending PT payload with: ", loc, prefs)
-        let options = {
-          latitude: loc.latitude,
-          longitude: loc.longitude,
-          method: prefs.calcMethod,
-          school: prefs.school,
-          midnightMode: prefs.midnightMode
-        }
         let today: number = Math.floor(Date.now() / 1000);
-      this.prayerTimesSvc.getPrayerTimes(today, options);
+        this.prayerTimesSvc.getPrayerTimes(today, loc, prefs);
       },
       error: (err) => {
         console.error(err);
       }
     })
-  }
 
-  // getLocation(){
-  //   return this.locationSvc.getLocation()
-  // }
+    // After subscriptions are in place, get the info needed
+    this.settingsSvc.getUserSettings();
+    this.settingsSvc.getUserPrefs();
+  }
 
 }

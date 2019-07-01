@@ -1,14 +1,42 @@
 <div class="location-container">
   <div class="location-box">
     <div class="loc-icon-box">
-      <i *ngIf="currentLocationNotSaved" class="material-icons loc-icon add-loc-icon">add</i>
+      <i *ngIf="!currentLocationSaved" class="material-icons loc-icon add-loc-icon">add</i>
     </div>
-    <p *ngIf="locationLoading" class="location-text">loading...</p>
-    <p *ngIf="!locationLoading" class="location-text">{{latitude | number}},{{longitude | number}}</p>
+
+    <div *ngIf="locationLoading" class="location-loading-box">
+        <mat-spinner color="accent" strokeWidth="2" diameter="25"></mat-spinner>
+    </div>
+
+    <form *ngIf="!locationLoading" action="#" (submit)="handleLocationInput($event)">
+      <mat-form-field color="accent">
+        <input 
+        matInput
+        placeholder="City, State, Country"
+        type="text" 
+        name="location" 
+        class="location-text" 
+        autocomplete="off" 
+        [(ngModel)]="displayName"
+        (click)="displayName=''">
+      </mat-form-field>
+    </form>
+    
     <div class="loc-icon-box" [matMenuTriggerFor]="menu">
-      <i class="material-icons loc-icon">keyboard_arrow_down</i>
+      <i class="material-icons loc-icon">expand_more</i>
       <mat-menu #menu="matMenu" color="accent">
-        <button *ngFor="let loc of savedLocations" mat-menu-item (click)="log($event, loc)">{{loc}}</button>
+      <div mat-menu-item class="menu-row">
+        Use Current Location
+        <i class="material-icons delete-location-icon">gps</i>
+      </div>
+      <div *ngFor="let loc of savedLocations" mat-menu-item (click)="cityClick($event, loc)" class="menu-row">
+        {{loc}}
+        <div (click)="deleteClick($event, loc)" class="delete-btn-box">
+          <button class="delete-location-btn">
+            <i class="material-icons delete-location-icon">close</i>
+          </button> 
+        </div>
+      </div>
       </mat-menu>
     </div>
   </div>

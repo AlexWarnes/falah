@@ -14,10 +14,13 @@ export interface prayerTimes {
 }
 
 export interface location {
+  type: string;
+  displayName: string;
   latitude: number;
   longitude: number;
-  altitude: number;
-  cityState: string;
+  city: string;
+  state: string;
+  country: string;
 }
 
 export interface preferences {
@@ -25,9 +28,14 @@ export interface preferences {
   calcMethod: number;
   school: number;
   midnightMode: number;
+  
+}
+
+export interface userSettings {
   notifications: boolean;
   savedLocations: Array<string>;
-  // TODO: Default location?
+  defaultLocation: string;
+  defaultCountry: string;
 }
 
 export interface ui {
@@ -56,10 +64,13 @@ export class StateService {
   })
   
   location$ = new BehaviorSubject<location>({
+    type: undefined,
+    displayName: undefined,
     latitude: undefined,
     longitude: undefined,
-    altitude: undefined,
-    cityState: undefined,
+    city: undefined,
+    state: undefined,
+    country: undefined
   })
 
   preferences$ = new BehaviorSubject<preferences>({
@@ -67,8 +78,13 @@ export class StateService {
     calcMethod: 2,
     school: 0,
     midnightMode: 0,
+  })
+
+  userSettings$ = new BehaviorSubject<userSettings>({
     notifications: false,
-    savedLocations: ['Alexandria, VA','Madison, WI','Grand Rapids, MI']
+    savedLocations: ['Alexandria, VA','Madison, WI','Grand Rapids, MI'],
+    defaultLocation: 'current location',
+    defaultCountry: 'US'
   })
 
   ui$ = new BehaviorSubject<ui>({
@@ -88,6 +104,14 @@ export class StateService {
       ...previousState,
       latitude: lat,
       longitude: lng
+    });
+    return this.location$.next(nextState);
+  }
+
+  setLocation(locationObj: location){
+    let previousState = this.location$.value;
+    let nextState = Object.assign({}, previousState, {
+      ...locationObj
     });
     return this.location$.next(nextState);
   }
@@ -130,8 +154,6 @@ export class StateService {
     let nextState = Object.assign({}, previousState, {
       ...prefs
     });
-    console.log("prefs: ", prefs);
-    console.log("next: ", nextState)
     return this.preferences$.next(nextState);
   }
 
@@ -141,6 +163,14 @@ export class StateService {
       ...previousState
     });
     return this.preferences$.next(nextState);
+  }
+
+  useDefaultSettings(){
+    let previousState = this.userSettings$.value;
+    let nextState = Object.assign({}, previousState, {
+      ...previousState
+    });
+    return this.userSettings$.next(nextState);
   }
 
 }
