@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { StateService, preferences, location } from '../state/state.service';
+import { StateService, calculationPrefs, location } from '../state/state.service';
 import mockData from '../state/mockTimes.json';
 import { Observable } from '../../../node_modules/rxjs';
 
@@ -20,7 +20,7 @@ export class PrayerTimesApiService {
     private STATE: StateService
   ) { }
 
-  getPrayerTimes(date: any, locationObj: location, prefsObj: preferences){
+  getPrayerTimes(date: any, locationObj: location, prefsObj: calculationPrefs){
     this.STATE.toggleTimesLoading(true);
     // Uses mock data if local
     if(this.isDevMode){

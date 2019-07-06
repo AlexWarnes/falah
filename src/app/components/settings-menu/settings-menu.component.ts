@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { preferences, StateService } from '../../state/state.service';
+import { calculationPrefs, StateService } from '../../state/state.service';
 import { Subscription } from '../../../../node_modules/rxjs';
 
 @Component({
@@ -13,8 +13,8 @@ export class SettingsMenuComponent implements OnDestroy {
     private STATE: StateService
   ) { }
 
-  dynamicSettings: preferences;
-  settingsSub: Subscription = this.STATE.preferences$.subscribe(prefs => {
+  dynamicSettings: calculationPrefs;
+  settingsSub: Subscription = this.STATE.calculationPrefs$.subscribe(prefs => {
     this.dynamicSettings = {...prefs};
   });
 
@@ -60,7 +60,7 @@ export class SettingsMenuComponent implements OnDestroy {
   }
 
   // Checks if the values in two objects are equal
-  objectsAreEqual(obj1: preferences, obj2: preferences): boolean {
+  objectsAreEqual(obj1: calculationPrefs, obj2: calculationPrefs): boolean {
     let keys = Object.keys(obj1);
     for(let key of keys){
       if(obj1[key] !== obj2[key]){
@@ -72,11 +72,11 @@ export class SettingsMenuComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.settingsSub.unsubscribe();
-    if(this.objectsAreEqual(this.dynamicSettings, this.STATE.preferences$.getValue())){
-      return console.log("Settings DID NOT CHANGE", this.dynamicSettings, "STATE: ", this.STATE.preferences$.getValue());
+    if(this.objectsAreEqual(this.dynamicSettings, this.STATE.getCalculationPrefs())){
+      return console.log("Settings DID NOT CHANGE", this.dynamicSettings, "STATE: ", this.STATE.getCalculationPrefs());
     } else {
       console.log("Settings DID CHANGE", this.dynamicSettings)
-      return this.STATE.setUserPrefs(this.dynamicSettings);
+      return this.STATE.setCalculationPrefs(this.dynamicSettings);
     }
   }
 

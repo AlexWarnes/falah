@@ -4,7 +4,7 @@ import { StateService, location } from './state/state.service';
 import { PrayerTimesApiService } from './services/prayer-times-api.service';
 import { SettingsService } from './services/settings.service';
 import { combineLatest } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -20,47 +20,55 @@ export class AppComponent implements OnInit {
   ){}
 
   prayerTimesPayload$ = combineLatest(
-    this.STATE.location$.pipe(skip(1)),
-    this.STATE.preferences$.pipe(skip(1))
-  );
-
-  initialSettings$ = combineLatest(
-    this.STATE.userSettings$.pipe(skip(1))
+    // Only emit if we have a valid location type to avoid
+    // emiting before location is set on app load
+    this.STATE.location$.pipe(filter(location => typeof location.type === 'string')),
+    this.STATE.calculationPrefs$,
   );
 
   ngOnInit(){
 
-    // Get user settings for default location
-    this.initialSettings$.subscribe(([settings]) => {
-      console.log("Got the initial settings: ", settings)
-      // Then use default location to update location$ state
-      this.locationSvc.decipherLocationFromInput(settings.defaultLocation)
-      .then(locationData => {
-        this.STATE.setLocation(locationData);
-      }).catch(err => {
-        console.error(err);
-      })
-      // TODO: Need to stop subscription after the initial settings load 
-      // otherwise any change to default location will recalc prayer times
-      // Consider just calling getUserSettings from cache, and always setting location 
-      // with the response. Then no need to do any of this logic in app onInit
-    })
+    this.settingsSvc.getUserPrefs()
+    // TODO: .subscribe({ 
+      // next: (res)=> {
+        // if(res has userSettings){
+        //   let loc = this.location.decipherLocationFromInput(res.defaultLocation)
+        //   this.STATE.setLocation(loc);
+        //   this.STATE.setUserPrefs(res);
+        // } else {
+        //   this.STATE.useDefaultUserPrefs();
+        this.STATE.useDefaultUserPrefs() //PLACEHOLDER
+        this.locationSvc.decipherLocationFromInput('current location').then(loc => { //PLACEHOLDER
+          this.STATE.setLocation(loc); //PLACEHOLDER
+        }); //PLACEHOLDER
+        // }
+      // }
+    // })
+    
+
+    this.settingsSvc.getCalculationPrefs()
+    // TODO: .subscribe({ 
+      // next: (res)=> {
+        // if(res has userPrefs){
+        //   return this.STATE.setCalcPrefs(res);
+        // } else {
+          this.STATE.useDefaultCalcPrefs(); //PLACEHOLDER
+        // }
+      // }
+    // })
 
     // Update the displayed Prayer Times whenever location$ or preferences$ change
     this.prayerTimesPayload$.subscribe({
-      next: ([loc, prefs]) => {
-        console.log("Sending PT payload with: ", loc, prefs)
+      next: ([loc, calcPrefs]) => {
+        console.log("Sending PT payload with: ", loc, calcPrefs)
         let today: number = Math.floor(Date.now() / 1000);
-        this.prayerTimesSvc.getPrayerTimes(today, loc, prefs);
+        this.prayerTimesSvc.getPrayerTimes(today, loc, calcPrefs);
       },
       error: (err) => {
         console.error(err);
       }
     })
 
-    // After subscriptions are in place, get the info needed
-    this.settingsSvc.getUserSettings();
-    this.settingsSvc.getUserPrefs();
   }
 
 }

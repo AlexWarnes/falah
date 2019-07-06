@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LocationService } from '../../services/location.service';
 import { StateService } from '../../state/state.service';
 import {FormControl} from '@angular/forms';
-import { combineLatest } from '../../../../node_modules/rxjs';
-import { skip } from '../../../../node_modules/rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { skip, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-location',
@@ -30,8 +30,8 @@ export class LocationComponent implements OnInit {
   }
 
   locationData$ = combineLatest(
-    this.STATE.location$.pipe(skip(1)),
-    this.STATE.userSettings$    
+    this.STATE.location$.pipe(filter(location => typeof location.type === 'string')),
+    this.STATE.userPrefs$    
   )
 
   cityClick(e, t){

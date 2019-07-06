@@ -23,7 +23,7 @@ export interface location {
   country: string;
 }
 
-export interface preferences {
+export interface calculationPrefs {
   autoDetectLocation: boolean;
   calcMethod: number;
   school: number;
@@ -31,7 +31,7 @@ export interface preferences {
   
 }
 
-export interface userSettings {
+export interface usePrefs {
   notifications: boolean;
   savedLocations: Array<string>;
   defaultLocation: string;
@@ -51,7 +51,8 @@ export class StateService {
 
   constructor() { }
 
-  prayerTimes$ = new BehaviorSubject<prayerTimes>({
+  // TODO: make all BS private and add another public asObservable like this:
+  private prayerTimes = new BehaviorSubject<prayerTimes>({
     Asr: undefined,
     Dhuhr: undefined,
     Fajr: undefined,
@@ -62,8 +63,9 @@ export class StateService {
     Sunrise: undefined,
     Sunset: undefined
   })
+  prayerTimes$ = this.prayerTimes.asObservable();
   
-  location$ = new BehaviorSubject<location>({
+  private location = new BehaviorSubject<location>({
     type: undefined,
     displayName: undefined,
     latitude: undefined,
@@ -72,105 +74,110 @@ export class StateService {
     state: undefined,
     country: undefined
   })
+  location$ = this.location.asObservable();
 
-  preferences$ = new BehaviorSubject<preferences>({
+  private calculationPrefs = new BehaviorSubject<calculationPrefs>({
     autoDetectLocation: true,
     calcMethod: 2,
     school: 0,
     midnightMode: 0,
   })
+  calculationPrefs$ = this.calculationPrefs.asObservable();
 
-  userSettings$ = new BehaviorSubject<userSettings>({
+  private userPrefs = new BehaviorSubject<usePrefs>({
     notifications: false,
     savedLocations: ['Alexandria, VA','Madison, WI','Grand Rapids, MI'],
     defaultLocation: 'current location',
     defaultCountry: 'US'
   })
+  userPrefs$ = this.userPrefs.asObservable();
 
-  ui$ = new BehaviorSubject<ui>({
-    appLoading: false,
+  private ui = new BehaviorSubject<ui>({
+    appLoading: true,
     timesLoading: true,
     locationLoading: true,
   })
-
-  // State management approach for now:
-  // setLatLng() saves to cacheAPI or IndexedDB (w Promise Wrapper)
-  // // then setLatLngSuccess() updates BehaviorSubject
-
+  ui$ = this.ui.asObservable();
 
   setLatLng(lat: number, lng: number): void {
-    let previousState = this.location$.value;
+    let previousState = this.location.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState,
       latitude: lat,
       longitude: lng
     });
-    return this.location$.next(nextState);
+    return this.location.next(nextState);
   }
 
   setLocation(locationObj: location){
-    let previousState = this.location$.value;
+    let previousState = this.location.value;
     let nextState = Object.assign({}, previousState, {
       ...locationObj
     });
-    return this.location$.next(nextState);
+    return this.location.next(nextState);
   }
 
   toggleAppLoading(isLoading: boolean): void {
-    let previousState = this.ui$.value;
+    let previousState = this.ui.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState,
       appLoading: isLoading
     });
-    return this.ui$.next(nextState);
+    return this.ui.next(nextState);
   }
   toggleTimesLoading(isLoading: boolean): void {
-    let previousState = this.ui$.value;
+    let previousState = this.ui.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState,
       timesLoading: isLoading
     });
-    return this.ui$.next(nextState);
+    return this.ui.next(nextState);
   }
   toggleLocationLoading(isLoading: boolean): void {
-    let previousState = this.ui$.value;
+    let previousState = this.ui.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState,
       locationLoading: isLoading
     });
-    return this.ui$.next(nextState);
+    return this.ui.next(nextState);
   }
 
   setPrayerTimes(prayerTimes: prayerTimes){
-    let previousState = this.prayerTimes$.value;
+    let previousState = this.prayerTimes.value;
     let nextState = Object.assign({}, previousState, {
       ...prayerTimes
     });
-    return this.prayerTimes$.next(nextState);
+    return this.prayerTimes.next(nextState);
   }
 
-  setUserPrefs(prefs: preferences){
-    let previousState = this.preferences$.value;
+  getCalculationPrefs(){
+    return this.calculationPrefs.value;
+  }
+
+  setCalculationPrefs(prefs: calculationPrefs){
+    let previousState = this.calculationPrefs.value;
     let nextState = Object.assign({}, previousState, {
       ...prefs
     });
-    return this.preferences$.next(nextState);
+    return this.calculationPrefs.next(nextState);
   }
 
-  useDefaultPrefs(){
-    let previousState = this.preferences$.value;
+  useDefaultCalcPrefs(){
+    let previousState = this.calculationPrefs.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState
     });
-    return this.preferences$.next(nextState);
+    console.log("Using default calcPrefs")
+    return this.calculationPrefs.next(nextState);
   }
 
-  useDefaultSettings(){
-    let previousState = this.userSettings$.value;
+  useDefaultUserPrefs(){
+    let previousState = this.userPrefs.value;
     let nextState = Object.assign({}, previousState, {
       ...previousState
     });
-    return this.userSettings$.next(nextState);
+    console.log("Using default userPrefs")
+    return this.userPrefs.next(nextState);
   }
 
 }
