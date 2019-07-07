@@ -33,7 +33,7 @@ export interface calculationPrefs {
 
 export interface usePrefs {
   notifications: boolean;
-  savedLocations: Array<string>;
+  savedLocations: Array<location>;
   defaultLocation: string;
   defaultCountry: string;
 }
@@ -86,7 +86,7 @@ export class StateService {
 
   private userPrefs = new BehaviorSubject<usePrefs>({
     notifications: false,
-    savedLocations: ['Alexandria, VA','Madison, WI','Grand Rapids, MI'],
+    savedLocations: [],
     defaultLocation: 'current location',
     defaultCountry: 'US'
   })
@@ -106,6 +106,7 @@ export class StateService {
       latitude: lat,
       longitude: lng
     });
+    this.logStateChange("setLatLng", previousState, nextState);
     return this.location.next(nextState);
   }
 
@@ -114,6 +115,7 @@ export class StateService {
     let nextState = Object.assign({}, previousState, {
       ...locationObj
     });
+    this.logStateChange("setLocation", previousState, nextState);
     return this.location.next(nextState);
   }
 
@@ -123,6 +125,7 @@ export class StateService {
       ...previousState,
       appLoading: isLoading
     });
+    this.logStateChange("toggleAppLoading", previousState, nextState);
     return this.ui.next(nextState);
   }
   toggleTimesLoading(isLoading: boolean): void {
@@ -131,6 +134,7 @@ export class StateService {
       ...previousState,
       timesLoading: isLoading
     });
+    this.logStateChange("toggleTimesLoading", previousState, nextState);
     return this.ui.next(nextState);
   }
   toggleLocationLoading(isLoading: boolean): void {
@@ -139,6 +143,7 @@ export class StateService {
       ...previousState,
       locationLoading: isLoading
     });
+    this.logStateChange("toggleLocationLoading", previousState, nextState);
     return this.ui.next(nextState);
   }
 
@@ -147,6 +152,7 @@ export class StateService {
     let nextState = Object.assign({}, previousState, {
       ...prayerTimes
     });
+    this.logStateChange("setPrayerTimes", previousState, nextState);
     return this.prayerTimes.next(nextState);
   }
 
@@ -159,6 +165,7 @@ export class StateService {
     let nextState = Object.assign({}, previousState, {
       ...prefs
     });
+    this.logStateChange("setCalculationPrefs", previousState, nextState);
     return this.calculationPrefs.next(nextState);
   }
 
@@ -168,6 +175,7 @@ export class StateService {
       ...previousState
     });
     console.log("Using default calcPrefs")
+    this.logStateChange("useDefaultCalcPrefs", previousState, nextState);
     return this.calculationPrefs.next(nextState);
   }
 
@@ -177,7 +185,28 @@ export class StateService {
       ...previousState
     });
     console.log("Using default userPrefs")
+    this.logStateChange("useDefaultUserPrefs", previousState, nextState);
     return this.userPrefs.next(nextState);
+  }
+
+  saveLocationToList(newLocation: location){
+    let previousState = this.userPrefs.value;
+    let nextState = Object.assign({}, previousState, {
+      ...previousState,
+      savedLocations: [...previousState.savedLocations, newLocation]
+    });
+    this.logStateChange("saveLocationToList", previousState, nextState);
+    return this.userPrefs.next(nextState);
+  }
+
+
+
+
+
+  logStateChange(label, prevState, nextState){
+    console.log("%c" + label, "font-weight: 600;");
+    console.log("%c PREVIOUS STATE: ","color: royalblue; font-weight: 600;", prevState);
+    console.log("%c NEXT STATE: ","color: seagreen; font-weight: 600;", nextState);
   }
 
 }

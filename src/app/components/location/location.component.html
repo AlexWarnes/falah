@@ -5,7 +5,7 @@
     </div> -->
 
     <div>
-      <button mat-icon-button *ngIf="!currentLocationSaved">
+      <button mat-icon-button *ngIf="!currentLocationSaved" (click)="handleAddLocationClick()">
         <i class="material-icons">add</i>
       </button>
     </div>
@@ -32,12 +32,12 @@
         <i class="material-icons">expand_more</i>
       </button>
       <mat-menu #menu="matMenu" color="accent">
-        <div mat-menu-item class="menu-row">
-          Use Current Location
+        <div mat-menu-item class="menu-row" [value]="currentLocationObj">
+          {{Use Current Location}}
           <i class="material-icons delete-location-icon">gps</i>
         </div>
         <div *ngFor="let loc of savedLocations" mat-menu-item (click)="cityClick($event, loc)" class="menu-row">
-          {{loc}}
+          {{loc.displayName}}
           <div (click)="deleteClick($event, loc)" class="delete-btn-box">
             <button class="delete-location-btn">
               <i class="material-icons delete-location-icon">close</i>
