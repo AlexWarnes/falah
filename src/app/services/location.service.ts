@@ -121,19 +121,31 @@ export class LocationService {
         })
       } else {
         console.log("Input is a 'City, State, Country'");
+        if(!this.stringIncludesCommas(locationInput)){
+          // TODO: handle error with snackbar
+          console.error("Input must be comma separated City, State, Country")
+          reject("Input must be comma separated City, State, Country");
+        }
+        let parsedInput = locationInput.split(',').map(e => e.trim().toLowerCase());
         let locationDetails: location = {
-          type: 'LAT_LNG',
-          displayName: 'Current Location',
+          type: 'CITY_STATE_COUNTRY',
+          displayName: locationInput,
           latitude: undefined,
           longitude: undefined,
-          city: undefined,
-          state: undefined,
-          country: undefined
+          city: parsedInput[0],
+          state: parsedInput[1],
+          country: parsedInput[2]
         }
         // TODO: handle error
         resolve(locationDetails)
       }
     })
   }
+
+  stringIncludesCommas(str: string): boolean{
+    return str.includes(',');
+  }
+
+
 
 }

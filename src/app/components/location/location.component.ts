@@ -14,6 +14,7 @@ export class LocationComponent implements OnInit {
 
   constructor(
     private STATE: StateService,
+    private locationSvc: LocationService
   ) { }
 
   currentLocationSaved: boolean = false;
@@ -45,6 +46,11 @@ export class LocationComponent implements OnInit {
 
   handleLocationInput(){
     console.log(this.displayName);
+    this.STATE.toggleTimesLoading(true);
+    this.locationSvc.decipherLocationFromInput(this.displayName).then(loc => {
+      this.STATE.setLocation(loc);
+      console.log("Deciphered new location as: ", loc)
+    })
   }
 
   ngOnInit() {

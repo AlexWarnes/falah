@@ -33,31 +33,56 @@ export class PrayerTimesApiService {
       switch(locationObj.type){
         case('LAT_LNG'):
         console.log("Gettings Prayer Times by Lat Lng...")
-        let options = {
+        let latLngOptions = {
           latitude: locationObj.latitude,
           longitude: locationObj.longitude,
           method: prefsObj.calcMethod,
           school: prefsObj.school,
           midnightMode: prefsObj.midnightMode
         }
-        this.getPrayerTimesByLatLng(date, options).subscribe(
+        this.getPrayerTimesByLatLng(date, latLngOptions).subscribe(
           (res) => {
             console.log(res);
             this.STATE.setPrayerTimes(res.data.timings);
             this.STATE.toggleTimesLoading(false);
+            return;
           },
           (err) => {
             console.error(err)
             this.STATE.toggleTimesLoading(false);
+            return;
             // TODO: add error handling
           }
         )
+        break;
         case('CITY_STATE_COUNTRY'):
-        return console.log("Gettings Prayer Times by City, State, Country")
-
+          console.log("Gettings Prayer Times by City, State, Country...", locationObj)
+          let cityOptions = {
+            city: locationObj.city,
+            state: locationObj.state,
+            country: locationObj.country,
+            method: prefsObj.calcMethod,
+            school: prefsObj.school,
+            midnightMode: prefsObj.midnightMode
+          }
+          this.getPrayerTimesByCity(date, cityOptions).subscribe(
+            (res) => {
+              console.log(res);
+              this.STATE.setPrayerTimes(res.data.timings);
+              this.STATE.toggleTimesLoading(false);
+              return;
+            },
+            (err) => {
+              console.error(err)
+              this.STATE.toggleTimesLoading(false);
+              return;
+              // TODO: add error handling
+            })
+            break;
         default:
           // TODO: handle error
           console.error('Error with getting prayer times.')
+          return;
       }
       
     }
@@ -76,6 +101,23 @@ export class PrayerTimesApiService {
     });
 
     return this.http.get(`${this.apiBaseURL}/timings`, {params});
+    // return this.http.get(`${this.apiBaseURL}/timings/${date}`, {params});
+  }
+
+
+  /**
+   * @param date unix: number or DD/MM/YYY: string; API defaults to current day
+   * @param argsObj populates query params
+   */
+  private getPrayerTimesByCity(date: any, argsObj: object): Observable<any>{
+    let params = new HttpParams();
+    
+    // Add all options as params
+    Object.keys(argsObj).forEach(arg => {
+      params = params.set(arg, argsObj[arg])
+    });
+
+    return this.http.get(`${this.apiBaseURL}/timingsByCity/${date}`, {params});
     // return this.http.get(`${this.apiBaseURL}/timings/${date}`, {params});
   }
 
