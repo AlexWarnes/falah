@@ -15,6 +15,7 @@ import { PrayerTimesViewComponent } from './components/prayer-times-view/prayer-
 import { SettingsViewComponent } from './components/settings-view/settings-view.component';
 import { LocationComponent } from './components/location/location.component';
 import { SettingsMenuComponent } from './components/settings-menu/settings-menu.component';
+import { ClockComponent } from './components/clock/clock.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SettingsMenuComponent } from './components/settings-menu/settings-menu.
     SettingsViewComponent,
     LocationComponent,
     SettingsMenuComponent,
+    ClockComponent,
   ],
   imports: [
     BrowserModule,

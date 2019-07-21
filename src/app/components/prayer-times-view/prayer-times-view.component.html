@@ -1,7 +1,14 @@
 
 <div class="view-container">
   <div class="window-box prayer-times-window">
-    <app-location [ngStyle]="{height: '20%'}"></app-location>
-    <app-times-table-day [ngStyle]="{height: '80%'}"></app-times-table-day>  
+    <app-location></app-location>
+    <app-clock></app-clock>
+    <app-times-table-day 
+      [ngStyle]="{
+        'flex-grow': '1',
+        'display': 'flex',
+        'padding-bottom':'60px'
+      }">
+    </app-times-table-day>  
   </div>
 </div>

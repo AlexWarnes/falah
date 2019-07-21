@@ -1,21 +1,18 @@
 <div class="location-container">
   <div class="location-box">
-    <!-- <div class="loc-icon-box">
-      <i *ngIf="!currentLocationSaved" class="material-icons loc-icon add-loc-icon">add</i>
-    </div> -->
 
-    <div>
-      <button mat-icon-button *ngIf="!currentLocationSaved" (click)="handleAddLocationClick()">
+    <div class="loc-icon-box">
+      <button mat-icon-button *ngIf="!currentLocationSaved" (click)="handleAddLocationClick()" color="accent">
         <i class="material-icons">add</i>
       </button>
     </div>
 
-    <div *ngIf="locationLoading" class="location-loading-box">
+    <!-- <div *ngIf="locationLoading" class="location-loading-box">
         <mat-spinner color="accent" strokeWidth="2" diameter="25"></mat-spinner>
-    </div>
+    </div> -->
 
-    <form *ngIf="!locationLoading" action="#" (submit)="handleLocationInput($event)">
-      <mat-form-field color="accent">
+    <form  action="#" (submit)="handleLocationInput($event)">
+      <mat-form-field  color="accent">
         <input 
         matInput
         type="text" 
@@ -23,22 +20,23 @@
         class="location-text" 
         autocomplete="off" 
         [(ngModel)]="displayName"
-        (click)="displayName=''">
+        (click)="displayName=''"
+        (blur)="handleBlur()">
       </mat-form-field>
     </form>
     
-    <div>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
+    <div class="loc-icon-box">
+      <button mat-icon-button [matMenuTriggerFor]="menu" color="accent">
         <i class="material-icons">expand_more</i>
       </button>
       <mat-menu #menu="matMenu" color="accent">
-        <div mat-menu-item class="menu-row" [value]="currentLocationObj">
-          {{Use Current Location}}
+        <div mat-menu-item class="menu-row" (click)="useCurrentLocation()">
+          Use Current Location
           <i class="material-icons delete-location-icon">gps</i>
         </div>
-        <div *ngFor="let loc of savedLocations" mat-menu-item (click)="cityClick($event, loc)" class="menu-row">
+        <div *ngFor="let loc of savedLocations" mat-menu-item (click)="cityClick(loc)" class="menu-row">
           {{loc.displayName}}
-          <div (click)="deleteClick($event, loc)" class="delete-btn-box">
+          <div (click)="deleteClick(loc)" class="delete-btn-box">
             <button class="delete-location-btn">
               <i class="material-icons delete-location-icon">close</i>
             </button> 
@@ -47,22 +45,5 @@
       </mat-menu>
     </div>
 
-    <!-- <div class="loc-icon-box" [matMenuTriggerFor]="menu">
-      <i class="material-icons loc-icon">expand_more</i>
-      <mat-menu #menu="matMenu" color="accent">
-      <div mat-menu-item class="menu-row">
-        Use Current Location
-        <i class="material-icons delete-location-icon">gps</i>
-      </div>
-      <div *ngFor="let loc of savedLocations" mat-menu-item (click)="cityClick($event, loc)" class="menu-row">
-        {{loc}}
-        <div (click)="deleteClick($event, loc)" class="delete-btn-box">
-          <button class="delete-location-btn">
-            <i class="material-icons delete-location-icon">close</i>
-          </button> 
-        </div>
-      </div>
-      </mat-menu>
-    </div> -->
   </div>
 </div>  

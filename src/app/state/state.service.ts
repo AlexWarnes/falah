@@ -44,6 +44,12 @@ export interface ui {
   locationLoading: boolean;
 }
 
+export interface loadingStatus {
+  userPrefs: true;
+  geoLocation: true;
+  prayerTimes: true;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -199,12 +205,24 @@ export class StateService {
     return this.userPrefs.next(nextState);
   }
 
+  removeLocationFromList(displayName: string){
+    let prevState = this.userPrefs.value;
+    let updatedLocList = prevState.savedLocations.filter(loc => {
+      return loc.displayName !== displayName;
+    });
+    let nextState = Object.assign({}, prevState, {
+      savedLocations: [...updatedLocList]
+    });
+    this.logStateChange("removeLocationFromList", prevState, nextState);
+    return this.userPrefs.next(nextState)
+  }
+
 
 
 
 
   logStateChange(label, prevState, nextState){
-    console.log("%c" + label, "font-weight: 600;");
+    console.log("%c" + label.toUpperCase(), "color: #333333; width: 100%; font-weight: 600; padding: 3px; background-color: #ffffff;");
     console.log("%c PREVIOUS STATE: ","color: royalblue; font-weight: 600;", prevState);
     console.log("%c NEXT STATE: ","color: seagreen; font-weight: 600;", nextState);
   }

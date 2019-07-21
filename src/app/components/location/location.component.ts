@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LocationService } from '../../services/location.service';
 import { StateService, location } from '../../state/state.service';
 import {FormControl} from '@angular/forms';
 import { combineLatest } from 'rxjs';
 import { skip, filter } from 'rxjs/operators';
+import {MatMenuTrigger} from '@angular/material/menu';
+
 
 @Component({
   selector: 'app-location',
@@ -17,12 +19,15 @@ export class LocationComponent implements OnInit {
     private locationSvc: LocationService
   ) { }
 
-  currentLocationSaved: boolean = false;
+  @ViewChild(MatMenuTrigger, {static: false}) trigger: MatMenuTrigger;
+
+  currentLocationSaved: boolean = true;
   locationInput: string;
   locationLoading: boolean;
   savedLocations: location[];
+  currentLocationRef: string;
   displayName: string;
-  // TODO: Handle current location click in menu
+  // TODO: display selected location if input is empty
 
   isLocationSaved(name: string): boolean {
     if(this.savedLocations.filter((loc) => loc.displayName === name).length > 0){
@@ -40,15 +45,15 @@ export class LocationComponent implements OnInit {
     this.STATE.userPrefs$    
   )
 
-  cityClick(e, t){
-    console.log("CITY CLICK!", e, t);
+  cityClick(t){
     event.stopPropagation();
     this.STATE.setLocation(t);
-    // TODO: close menu on click
+    this.trigger.closeMenu();
   }
-  deleteClick(e, t){
-    console.log("DELETE CLICK!", e, t);
+  deleteClick(t){
     event.stopPropagation();
+    this.STATE.removeLocationFromList(t.displayName);
+    this.trigger.closeMenu();
   }
 
   handleLocationInput(){
@@ -66,9 +71,20 @@ export class LocationComponent implements OnInit {
     }) 
   }
 
+  useCurrentLocation(){
+    this.locationSvc.decipherLocationFromInput('current location').then(loc => {
+      this.STATE.setLocation(loc);
+    });
+  }
+
+  handleBlur(){
+    this.displayName = this.currentLocationRef;
+  }
+
   ngOnInit() {
     this.locationData$.subscribe(([loc, settings]) => {
       this.savedLocations = settings.savedLocations;
+      this.currentLocationRef = loc.displayName
       this.displayName = loc.displayName
       this.currentLocationSaved = this.isLocationSaved(this.displayName);
       console.log("savedLocations: ", this.savedLocations)
