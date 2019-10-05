@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "falah-d6e38": {
+      "hosting": {
+        "falah": [
+          "falah-d6e38"
+        ]
+      }
+    }
+  }
+}

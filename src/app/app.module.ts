@@ -16,6 +16,8 @@ import { SettingsViewComponent } from './components/settings-view/settings-view.
 import { LocationComponent } from './components/location/location.component';
 import { SettingsMenuComponent } from './components/settings-menu/settings-menu.component';
 import { ClockComponent } from './components/clock/clock.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,7 @@ import { ClockComponent } from './components/clock/clock.component';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatMenuModule,
-    MatFormFieldModule, MatInputModule
+    MatFormFieldModule, MatInputModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]

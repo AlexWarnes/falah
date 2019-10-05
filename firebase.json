@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "falah",
+      "public": "dist/falah",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}
