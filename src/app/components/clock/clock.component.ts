@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ApplicationRef, AfterViewChecked, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { UtilitiesService } from '../../services/utilities.service';
+import { interval } from '../../../../node_modules/rxjs';
+import { first, tap, switchMap } from '../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'app-clock',
@@ -9,7 +11,9 @@ import { UtilitiesService } from '../../services/utilities.service';
 export class ClockComponent implements OnInit {
 
   constructor(
-    private utilities: UtilitiesService
+    private applicationRef: ApplicationRef,
+    private utilities: UtilitiesService,
+    private changeDetector: ChangeDetectorRef
   ) { }
 
   hour: string;
@@ -17,11 +21,18 @@ export class ClockComponent implements OnInit {
   sec: string;
   suffix: string;
 
+  tick$ = interval(1000);
+
   ngOnInit() {
-    this.tick();
-    setInterval(()=>{
-      this.tick();
-    }, 1000)
+    this.applicationRef.isStable.pipe(
+      first(stable => stable),
+      tap(stable => console.log('%c App is Now stable: ', 'background: seagreen; padding: 4px; color: #ffffff; font-weight: 600;')),
+      switchMap((s)=>interval(1000))
+    ).subscribe((s)=> {
+      console.log('clock is ticking')
+      this.tick()
+      this.changeDetector.detectChanges()
+    })
   }
 
   tick(){
