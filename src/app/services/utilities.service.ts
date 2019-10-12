@@ -7,19 +7,24 @@ export class UtilitiesService {
 
   constructor() { }
 
-  format12Hour(hours){
-    let newHour = hours > 12 ? hours - 12 : hours;
+  format12Hour(hours): string{
+    let newHour = hours > 12 ? String(hours - 12) : this.rmvZeros(hours);
     return newHour;
   }
 
-  formatAmPm(hours){
+  formatAmPm(hours): string{
     let suffix = hours > 12 ? 'am' : 'pm';
     return suffix;
   }
 
-  addZeros(num: number){
-    let result = num < 10 ? `0${num}` : num;
+  addZeros(num: number): string{
+    let result = num < 10 ? `0${num}` : String(num);
     return result;
+  }
+
+  rmvZeros(num: string | number): string {
+    const stringForce = String(num);
+    return stringForce.indexOf('0') === 0 ? stringForce.replace('0','') : stringForce;
   }
   
 }

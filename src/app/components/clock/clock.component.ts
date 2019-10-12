@@ -24,6 +24,7 @@ export class ClockComponent implements OnInit {
   tick$ = interval(1000);
 
   ngOnInit() {
+    this.tick();
     this.applicationRef.isStable.pipe(
       first(stable => stable),
       tap(stable => console.log('%c App is Now stable: ', 'background: seagreen; padding: 4px; color: #ffffff; font-weight: 600;')),

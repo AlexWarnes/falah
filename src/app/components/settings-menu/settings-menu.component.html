@@ -22,13 +22,13 @@
   </mat-form-field>
   
   <mat-form-field color="accent">
-    <mat-label>School</mat-label>
+    <mat-label>Asr Mode</mat-label>
     <mat-select 
     [value]="dynamicSettings.school"
     (selectionChange)="updateSelected($event)"
     id="school">
       <mat-option *ngFor="let school of schools" [value]="school.value">
-        {{school.name}}
+        {{school.name === 'Hanafi' ? 'Hanafi' : 'Standard'}}
       </mat-option>
     </mat-select>
   </mat-form-field>

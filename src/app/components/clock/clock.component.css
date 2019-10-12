@@ -1,15 +1,28 @@
 .clock-container {
   width: 100%;
+  height: 120px;
   display: flex;
   justify-content: center;
-  align-items: baseline;
+  align-items: center;
   padding: 10% 0;
-  font-size: 2em;
+  font-size: 45px;
   font-weight: 200;
 }
 
 .time {
   margin: 0;
+}
+
+.time.hour, .time.min {
+  margin: 0 5px 0 0;
+}
+
+.suffix-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 14px;
+  height: 35px;
 }
 
 .time-suffix {

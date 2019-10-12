@@ -1,5 +1,6 @@
 .settings-menu-container {
   height: 100%;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

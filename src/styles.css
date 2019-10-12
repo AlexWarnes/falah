@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+/* Dark Primary #37474F */
+/* Darker Primary #263238 */
+/* Accents #A7FFEB, #00BFA5 */
+
 body * {
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
@@ -7,8 +11,8 @@ body * {
 body {
   margin: 0;
   color: #ffffff;
-  background-color: #1b1b1b;
-  background: #1b1b1b;  
+  background-color: #263238;
+  background: #263238;  
 }
 
 .view-container {
