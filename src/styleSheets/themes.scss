@@ -7,7 +7,7 @@
 @include mat-core();
 
 // Define the default theme (same as the example above).
-$mint-chocolate-primary: mat-palette($mat-blue-grey);
+$mint-chocolate-primary: mat-palette($mat-gray);
 $mint-chocolate-accent:  mat-palette($mat-teal, A200, A100, A400);
 $mint-chocolate-theme:   mat-dark-theme($mint-chocolate-primary, $mint-chocolate-accent);
 
