@@ -69,7 +69,7 @@ export class StateService {
     Sunrise: undefined,
     Sunset: undefined
   })
-  prayerTimes$ = this.prayerTimes.asObservable();
+  prayerTimes$: Observable<prayerTimes> = this.prayerTimes.asObservable();
   
   private location = new BehaviorSubject<location>({
     type: undefined,

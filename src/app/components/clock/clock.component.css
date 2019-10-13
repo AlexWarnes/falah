@@ -30,3 +30,14 @@
   padding: 0 0 0 3px;
   font-size: .75em;
 }
+
+.next-event-row {
+  display: flex;
+  justify-content: center;
+}
+
+.next-event-text {
+  margin: 0;
+  padding: 0 5px;
+  border-left: 2px solid #64FFDA;
+}

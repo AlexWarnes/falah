@@ -6,3 +6,9 @@
     <p class="time sec">{{sec}}</p>
   </div>
 </div>
+<div class="next-event-row">
+  <p *ngIf="timeToNextEvent" class="next-event-text">
+    <span *ngIf="timeToNextEvent.hours">{{timeToNextEvent.hours}} {{timeToNextEvent.hours > 1 ? 'hours' : 'hour'}} and </span>
+    {{timeToNextEvent.minutes}} {{timeToNextEvent.minutes > 1 ? 'minutes' : 'minute'}} until {{nextEvent?.name}}
+  </p>
+</div>
