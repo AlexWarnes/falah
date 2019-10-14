@@ -50,6 +50,11 @@ export interface loadingStatus {
   prayerTimes: true;
 }
 
+export interface NextEvent {
+  name: string;
+  time: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -104,6 +109,9 @@ export class StateService {
     locationLoading: true,
   })
   ui$ = this.ui.asObservable();
+
+  private nextEvent_ = new BehaviorSubject<NextEvent>(undefined);
+  public nextEvent$ = this.nextEvent_.asObservable();
 
   setLatLng(lat: number, lng: number): void {
     let previousState = this.location.value;
@@ -215,6 +223,15 @@ export class StateService {
     });
     this.logStateChange("removeLocationFromList", prevState, nextState);
     return this.userPrefs.next(nextState)
+  }
+
+  setNextEvent(event: NextEvent){
+    let previousState = this.nextEvent_.value;
+    let nextState = Object.assign({}, previousState, {
+      ...event
+    });
+    this.logStateChange("setNextEvent", previousState, nextState);
+    return this.nextEvent_.next(nextState);
   }
 
 

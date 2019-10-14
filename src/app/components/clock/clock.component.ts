@@ -46,8 +46,11 @@ export class ClockComponent implements OnInit, OnDestroy {
       filter(pt => pt.Fajr != null)
     ).subscribe(prayerTimes => {
       this.currentPrayerTimes = prayerTimes;
-      this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
+      // this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
+      // this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
+      
+      this.reEstablishTimeToNextEvent(this.currentPrayerTimes);
+
     })
   }
 
@@ -64,9 +67,17 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.suffix = this.utilities.formatAmPm(now.getHours());
 
     if(this.currentPrayerTimes && minsChanged ){
-      this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
+      // this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
+      // this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
+      this.reEstablishTimeToNextEvent(this.currentPrayerTimes);
+
     }
+  }
+
+  reEstablishTimeToNextEvent(prayerTimes: prayerTimes){
+    this.nextEvent = this.utilities.findNextEvent(prayerTimes)
+    this.timeToNextEvent = this.nextEvent && this.nextEvent.time ? this.calcTimeToNextEvent(this.nextEvent.time):undefined
+    this.STATE.setNextEvent(this.nextEvent);
   }
 
   calcTimeToNextEvent(nextTime){

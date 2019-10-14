@@ -4,27 +4,27 @@
   </div>
   <ng-template #timesTable class="times-table">
     <ul class="times-table">
-      <li class="time-box" [ngClass]="nextEventName === 'Fajr' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Fajr</p>
         <p class="event-time">{{todayTimes.Fajr}}</p>
       </li>
-      <li class="time-box" [ngClass]="nextEventName === 'Sunrise' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Sunrise' && nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Sunrise</p>
         <p class="event-time">{{todayTimes.Sunrise}}</p>
       </li>
-      <li class="time-box" [ngClass]="nextEventName === 'Dhuhr' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Dhuhr' && nextEvent?.name !== 'Sunrise' && nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Dhuhr</p>
         <p class="event-time">{{todayTimes.Dhuhr}}</p>
       </li>
-      <li class="time-box" [ngClass]="nextEventName === 'Asr' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Asr' && nextEvent?.name !== 'Dhuhr' && nextEvent?.name !== 'Sunrise' && nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Asr</p>
         <p class="event-time">{{todayTimes.Asr}}</p>
       </li>
-      <li class="time-box" [ngClass]="nextEventName === 'Maghrib' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Maghrib' && nextEvent?.name !== 'Asr' && nextEvent?.name !== 'Dhuhr' && nextEvent?.name !== 'Sunrise' && nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Maghrib</p>
         <p class="event-time">{{todayTimes.Maghrib}}</p>
       </li>
-      <li class="time-box" [ngClass]="nextEventName === 'Isha' ? 'next-event' : ''">
+      <li class="time-box" [ngClass]="nextEvent?.name !== 'Isha' && nextEvent?.name !== 'Maghrib' && nextEvent?.name !== 'Asr' && nextEvent?.name !== 'Dhuhr' && nextEvent?.name !== 'Sunrise' && nextEvent?.name !== 'Fajr' ? 'passed' : ''">
         <p class="event-name">Isha</p>
         <p class="event-time">{{todayTimes.Isha}}</p>
       </li>

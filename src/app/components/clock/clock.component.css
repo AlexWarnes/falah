@@ -1,10 +1,9 @@
 .clock-container {
   width: 100%;
-  height: 120px;
+  height: 104px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10% 0;
   font-size: 45px;
   font-weight: 200;
 }
@@ -34,6 +33,7 @@
 .next-event-row {
   display: flex;
   justify-content: center;
+  height: 16px;
 }
 
 .next-event-text {

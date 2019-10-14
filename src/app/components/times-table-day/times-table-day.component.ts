@@ -18,7 +18,7 @@ export class TimesTableDayComponent implements OnInit {
   timesLoading: boolean;
   todayEvents: Array<any>;
   todayTimes: prayerTimes;
-  nextEventName: any;
+  nextEvent: any;
 
   ngOnInit() {
     this.STATE.prayerTimes$.pipe(
@@ -27,13 +27,19 @@ export class TimesTableDayComponent implements OnInit {
       times => {
         this.todayEvents = Object.keys(times);
         this.todayTimes = this.formatPrayerTimes(times);
-        this.nextEventName = this.utilities.findNextEvent(times).name;
+        // let next = this.utilities.findNextEvent(times);
+        // this.nextEvent = next && next.length > 0 ? next : undefined;
       })
 
     this.STATE.ui$.subscribe(
       ui => {
         this.timesLoading = ui.timesLoading
       })
+
+    this.STATE.nextEvent$.subscribe(nextEvent => {
+      console.log("Emitting next data: ", nextEvent)
+      this.nextEvent = nextEvent && nextEvent.name ? nextEvent : undefined;
+    })
   }
 
   formatPrayerTimes(prayerTimes: any): any{
