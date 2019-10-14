@@ -4,27 +4,27 @@
   </div>
   <ng-template #timesTable class="times-table">
     <ul class="times-table">
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Fajr' ? 'next-event' : ''">
         <p class="event-name">Fajr</p>
         <p class="event-time">{{todayTimes.Fajr}}</p>
       </li>
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Sunrise' ? 'next-event' : ''">
         <p class="event-name">Sunrise</p>
         <p class="event-time">{{todayTimes.Sunrise}}</p>
       </li>
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Dhuhr' ? 'next-event' : ''">
         <p class="event-name">Dhuhr</p>
         <p class="event-time">{{todayTimes.Dhuhr}}</p>
       </li>
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Asr' ? 'next-event' : ''">
         <p class="event-name">Asr</p>
         <p class="event-time">{{todayTimes.Asr}}</p>
       </li>
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Maghrib' ? 'next-event' : ''">
         <p class="event-name">Maghrib</p>
         <p class="event-time">{{todayTimes.Maghrib}}</p>
       </li>
-      <li class="time-box">
+      <li class="time-box" [ngClass]="nextEventName === 'Isha' ? 'next-event' : ''">
         <p class="event-name">Isha</p>
         <p class="event-time">{{todayTimes.Isha}}</p>
       </li>

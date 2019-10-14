@@ -4,6 +4,11 @@
   align-items: center;
   width: 100%;
   max-width: 300px;
+  padding: 0 5px;
+}
+
+.time-box.next-event {
+  border-left: 2px solid #64FFDA;
 }
 
 .times-container {

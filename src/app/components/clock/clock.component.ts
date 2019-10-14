@@ -1,6 +1,6 @@
-import { Component, OnInit, ApplicationRef, AfterViewChecked, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ApplicationRef, AfterViewChecked, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { UtilitiesService } from '../../services/utilities.service';
-import { interval } from '../../../../node_modules/rxjs';
+import { interval, Subscription } from '../../../../node_modules/rxjs';
 import { first, tap, switchMap, filter } from '../../../../node_modules/rxjs/operators';
 import { StateService, prayerTimes } from '../../state/state.service';
 
@@ -9,7 +9,7 @@ import { StateService, prayerTimes } from '../../state/state.service';
   templateUrl: './clock.component.html',
   styleUrls: ['./clock.component.css']
 })
-export class ClockComponent implements OnInit {
+export class ClockComponent implements OnInit, OnDestroy {
 
   constructor(
     private applicationRef: ApplicationRef,
@@ -17,6 +17,8 @@ export class ClockComponent implements OnInit {
     private utilities: UtilitiesService,
     private changeDetector: ChangeDetectorRef
   ) { }
+
+  applicationSub: Subscription;
 
   hour: string;
   min: string;
@@ -31,7 +33,7 @@ export class ClockComponent implements OnInit {
 
   ngOnInit() {
     this.tick();
-    this.applicationRef.isStable.pipe(
+    this.applicationSub = this.applicationRef.isStable.pipe(
       first(stable => stable),
       tap(() => console.log('%c App is Now stable: ', 'background: seagreen; padding: 4px; color: #ffffff; font-weight: 600;')),
       switchMap((s)=>interval(1000))
@@ -45,8 +47,12 @@ export class ClockComponent implements OnInit {
     ).subscribe(prayerTimes => {
       this.currentPrayerTimes = prayerTimes;
       this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      this.timeToNextEvent = this.calcTimeToNextEvent(this.nextEvent.time);
+      this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
     })
+  }
+
+  ngOnDestroy(){
+    this.applicationSub.unsubscribe();
   }
 
   tick(){
@@ -59,9 +65,7 @@ export class ClockComponent implements OnInit {
 
     if(this.currentPrayerTimes && minsChanged ){
       this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      console.log(this.nextEvent)
-      this.timeToNextEvent = this.calcTimeToNextEvent(this.nextEvent.time);
-      console.log(this.timeToNextEvent)
+      this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
     }
   }
 
