@@ -2,7 +2,7 @@ import { Component, OnInit, ApplicationRef, AfterViewChecked, AfterViewInit, Cha
 import { UtilitiesService } from '../../services/utilities.service';
 import { interval, Subscription } from '../../../../node_modules/rxjs';
 import { first, tap, switchMap, filter } from '../../../../node_modules/rxjs/operators';
-import { StateService, prayerTimes } from '../../state/state.service';
+import { StateService, prayerTimes, NextEvent } from '../../state/state.service';
 
 @Component({
   selector: 'app-clock',
@@ -35,22 +35,17 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.tick();
     this.applicationSub = this.applicationRef.isStable.pipe(
       first(stable => stable),
-      tap(() => console.log('%c App is Now stable: ', 'background: seagreen; padding: 4px; color: #ffffff; font-weight: 600;')),
+      tap(() => console.log('%c App is Stable', 'background: seagreen; padding: 4px; color: #ffffff; font-weight: 600;')),
       switchMap((s)=>interval(1000))
     ).subscribe((s)=> {
       this.tick()
-      this.changeDetector.detectChanges()
     })
 
     this.STATE.prayerTimes$.pipe(
       filter(pt => pt.Fajr != null)
     ).subscribe(prayerTimes => {
-      this.currentPrayerTimes = prayerTimes;
-      // this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      // this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
-      
+      this.currentPrayerTimes = prayerTimes;      
       this.reEstablishTimeToNextEvent(this.currentPrayerTimes);
-
     })
   }
 
@@ -67,10 +62,11 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.suffix = this.utilities.formatAmPm(now.getHours());
 
     if(this.currentPrayerTimes && minsChanged ){
-      // this.nextEvent = this.utilities.findNextEvent(this.currentPrayerTimes);
-      // this.timeToNextEvent = this.nextEvent ? this.calcTimeToNextEvent(this.nextEvent.time):undefined;
       this.reEstablishTimeToNextEvent(this.currentPrayerTimes);
+      this.applicationRef.tick()
 
+    } else {
+      this.changeDetector.detectChanges()
     }
   }
 

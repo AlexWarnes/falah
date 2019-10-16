@@ -5,6 +5,7 @@
   width: 100%;
   max-width: 300px;
   padding: 0 5px;
+  transition: all .5s ease;
 }
 
 .time-box.passed {

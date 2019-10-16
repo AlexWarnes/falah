@@ -19,6 +19,7 @@ export class TimesTableDayComponent implements OnInit {
   todayEvents: Array<any>;
   todayTimes: prayerTimes;
   nextEvent: any;
+  testEvent: any;
 
   ngOnInit() {
     this.STATE.prayerTimes$.pipe(
@@ -37,7 +38,6 @@ export class TimesTableDayComponent implements OnInit {
       })
 
     this.STATE.nextEvent$.subscribe(nextEvent => {
-      console.log("Emitting next data: ", nextEvent)
       this.nextEvent = nextEvent && nextEvent.name ? nextEvent : undefined;
     })
   }
